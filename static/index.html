@@ -9,63 +9,182 @@
   <body>
     <header class="app-header">
       <div>
-        <p class="eyebrow">CareerLog MVP</p>
-        <h1>지원 기업 관리</h1>
+        <p class="eyebrow">CareerLog</p>
+        <h1>취업 준비 운영판</h1>
       </div>
-      <button id="newButton" type="button">새 기업</button>
+      <div class="header-actions">
+        <button id="importButton" type="button">CSV 가져오기</button>
+        <input id="importInput" type="file" accept=".csv,text/csv" hidden />
+        <button id="exportButton" type="button">CSV 내보내기</button>
+        <button id="newButton" type="button">새 기업</button>
+      </div>
     </header>
+
+    <section id="dashboard" class="dashboard" aria-label="취업 준비 요약"></section>
 
     <main class="layout">
       <section class="list-panel" aria-label="지원 기업 목록">
         <div class="panel-header">
-          <h2>지원 목록</h2>
-          <span id="countBadge">0개</span>
+          <div>
+            <h2>지원 목록</h2>
+            <span id="countBadge">0개</span>
+          </div>
         </div>
+
+        <div class="filters">
+          <input id="searchInput" type="search" placeholder="회사명, 직무, 메모 검색" />
+          <select id="statusFilter" aria-label="지원 상태 필터"></select>
+          <select id="sortSelect" aria-label="정렬">
+            <option value="deadline">마감일 가까운 순</option>
+            <option value="created">최근 등록 순</option>
+            <option value="company">회사명 순</option>
+          </select>
+        </div>
+
         <div id="applicationList" class="application-list"></div>
       </section>
 
       <section class="detail-panel" aria-label="지원 기업 상세">
-        <form id="applicationForm">
-          <input id="applicationId" type="hidden" />
-
-          <div class="form-grid">
-            <label>
-              회사명
-              <input id="companyName" name="company_name" required maxlength="120" />
-            </label>
-
-            <label>
-              직무
-              <input id="position" name="position" required maxlength="120" />
-            </label>
-
-            <label>
-              마감일
-              <input id="deadline" name="deadline" type="date" />
-            </label>
-
-            <label>
-              지원 상태
-              <select id="status" name="status"></select>
-            </label>
+        <div class="detail-heading">
+          <div>
+            <h2 id="detailTitle">지원 상세</h2>
+            <p id="detailSubtitle">기업을 선택하거나 새 지원 항목을 추가하세요.</p>
           </div>
+        </div>
 
-          <label class="memo-field">
-            기업별 메모
-            <textarea
-              id="memo"
-              name="memo"
-              rows="10"
-              placeholder="지원 전략, 자기소개서 문항, 답변 초안, 수정 메모 등을 기록하세요."
-            ></textarea>
-          </label>
+        <div class="tabs" role="tablist" aria-label="상세 정보">
+          <button class="active" data-tab-target="profile" type="button">기본 정보</button>
+          <button data-tab-target="interviews" type="button">면접</button>
+          <button data-tab-target="cover" type="button">자소서</button>
+          <button data-tab-target="timeline" type="button">타임라인</button>
+        </div>
 
-          <div class="actions">
-            <button type="submit" class="primary">저장</button>
-            <button id="memoButton" type="button">메모만 저장</button>
-            <button id="deleteButton" type="button" class="danger">삭제</button>
-          </div>
-        </form>
+        <section class="tab-panel active" data-tab-panel="profile">
+          <form id="applicationForm">
+            <input id="applicationId" type="hidden" />
+
+            <div class="form-grid">
+              <label>
+                회사명
+                <input id="companyName" name="company_name" required maxlength="120" />
+              </label>
+
+              <label>
+                직무
+                <input id="position" name="position" required maxlength="120" />
+              </label>
+
+              <label>
+                마감일
+                <input id="deadline" name="deadline" type="date" />
+              </label>
+
+              <label>
+                지원 상태
+                <select id="status" name="status"></select>
+              </label>
+            </div>
+
+            <label class="memo-field">
+              기업별 메모
+              <textarea
+                id="memo"
+                name="memo"
+                rows="8"
+                placeholder="지원 전략, 채용 공고 링크, 연락 내역 등을 기록하세요."
+              ></textarea>
+            </label>
+
+            <div class="actions">
+              <button type="submit" class="primary">저장</button>
+              <button id="memoButton" type="button">메모만 저장</button>
+              <button id="deleteButton" type="button" class="danger">삭제</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="tab-panel" data-tab-panel="interviews">
+          <form id="interviewForm" class="stacked-form">
+            <input id="interviewId" type="hidden" />
+            <div class="form-grid">
+              <label>
+                면접일
+                <input id="interviewDate" type="date" />
+              </label>
+              <label>
+                면접 유형
+                <input id="interviewType" maxlength="60" value="면접" required />
+              </label>
+              <label>
+                결과/상태
+                <input id="interviewResult" maxlength="60" value="예정" required />
+              </label>
+            </div>
+            <label class="memo-field">
+              질문
+              <textarea id="interviewQuestions" rows="5"></textarea>
+            </label>
+            <label class="memo-field">
+              복기 메모
+              <textarea id="interviewNotes" rows="5"></textarea>
+            </label>
+            <div class="actions">
+              <button type="submit" class="primary">면접 저장</button>
+              <button id="clearInterviewButton" type="button">입력 초기화</button>
+            </div>
+          </form>
+          <div id="interviewList" class="record-list"></div>
+        </section>
+
+        <section class="tab-panel" data-tab-panel="cover">
+          <form id="coverForm" class="stacked-form">
+            <input id="coverId" type="hidden" />
+            <div class="form-grid">
+              <label>
+                작성 상태
+                <select id="coverStatus"></select>
+              </label>
+            </div>
+            <label class="memo-field">
+              문항
+              <textarea id="coverQuestion" rows="3" required></textarea>
+            </label>
+            <label class="memo-field">
+              답변
+              <textarea id="coverAnswer" rows="8"></textarea>
+            </label>
+            <div class="actions">
+              <button type="submit" class="primary">문항 저장</button>
+              <button id="clearCoverButton" type="button">입력 초기화</button>
+            </div>
+          </form>
+          <div id="coverList" class="record-list"></div>
+        </section>
+
+        <section class="tab-panel" data-tab-panel="timeline">
+          <form id="eventForm" class="stacked-form">
+            <input id="eventId" type="hidden" />
+            <div class="form-grid">
+              <label>
+                날짜
+                <input id="eventDate" type="date" />
+              </label>
+              <label>
+                기록 유형
+                <input id="eventType" maxlength="60" placeholder="지원 완료, 서류 결과, 면접, 최종 결과" required />
+              </label>
+            </div>
+            <label class="memo-field">
+              메모
+              <textarea id="eventNote" rows="5"></textarea>
+            </label>
+            <div class="actions">
+              <button type="submit" class="primary">타임라인 저장</button>
+              <button id="clearEventButton" type="button">입력 초기화</button>
+            </div>
+          </form>
+          <div id="eventList" class="timeline-list"></div>
+        </section>
       </section>
     </main>
 
