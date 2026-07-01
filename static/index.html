@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CareerLog</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">CareerLog MVP</p>
+        <h1>지원 기업 관리</h1>
+      </div>
+      <button id="newButton" type="button">새 기업</button>
+    </header>
+
+    <main class="layout">
+      <section class="list-panel" aria-label="지원 기업 목록">
+        <div class="panel-header">
+          <h2>지원 목록</h2>
+          <span id="countBadge">0개</span>
+        </div>
+        <div id="applicationList" class="application-list"></div>
+      </section>
+
+      <section class="detail-panel" aria-label="지원 기업 상세">
+        <form id="applicationForm">
+          <input id="applicationId" type="hidden" />
+
+          <div class="form-grid">
+            <label>
+              회사명
+              <input id="companyName" name="company_name" required maxlength="120" />
+            </label>
+
+            <label>
+              직무
+              <input id="position" name="position" required maxlength="120" />
+            </label>
+
+            <label>
+              마감일
+              <input id="deadline" name="deadline" type="date" />
+            </label>
+
+            <label>
+              지원 상태
+              <select id="status" name="status"></select>
+            </label>
+          </div>
+
+          <label class="memo-field">
+            기업별 메모
+            <textarea
+              id="memo"
+              name="memo"
+              rows="10"
+              placeholder="지원 전략, 자기소개서 문항, 답변 초안, 수정 메모 등을 기록하세요."
+            ></textarea>
+          </label>
+
+          <div class="actions">
+            <button type="submit" class="primary">저장</button>
+            <button id="memoButton" type="button">메모만 저장</button>
+            <button id="deleteButton" type="button" class="danger">삭제</button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <div id="toast" role="status" aria-live="polite"></div>
+    <script src="/static/app.js"></script>
+  </body>
+</html>
